@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formatic - File Converter</title>
+
+    <!-- ✅ Link CSS -->
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- ✅ jsPDF for PDF Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <!-- ✅ PDF.js for PDF Handling -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.min.js"></script>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Formatic - Free File Converter</h1>
+
+        <div class="converter-box">
+            <h2>Image to PDF</h2>
+            <input type="file" id="imageInput" accept="image/*">
+            <button onclick="convertImageToPDF()">Convert</button>
+        </div>
+
+        <div class="converter-box">
+            <h2>PDF to Word</h2>
+            <input type="file" id="pdfToWordInput" accept=".pdf">
+            <button onclick="convertPDFToWord()">Convert</button>
+        </div>
+
+        <div class="converter-box">
+            <h2>Word to PDF</h2>
+            <input type="file" id="wordToPDFInput" accept=".doc,.docx">
+            <button onclick="convertWordToPDF()">Convert</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
