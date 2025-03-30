@@ -38,6 +38,25 @@
         </div>
     </div>
 
+// Function to update UI with separate icons
+document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("imageToPDF").addEventListener("click", function () {
+        window.location.href = "image_to_pdf.html";
+    });
+    
+    document.getElementById("pdfToWord").addEventListener("click", function () {
+        window.location.href = "pdf_to_word.html";
+    });
+    
+    document.getElementById("wordToPDF").addEventListener("click", function () {
+        window.location.href = "word_to_pdf.html";
+    });
+    
+    document.getElementById("textToPDF").addEventListener("click", function () {
+        window.location.href = "text_to_pdf.html";
+    });
+});
+
     <script src="script.js"></script>
 </body>
 </html>
