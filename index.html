@@ -1,72 +1,27 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SwiftFormatic - File Converter</title>
+    <title>SwiftFormatic</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="script.js" defer></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #f4f4f4;
-        }
-        .container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-top: 50px;
-        }
-        .tool {
-            width: 200px;
-            padding: 20px;
-            margin: 15px;
-            border-radius: 10px;
-            color: white;
-            font-size: 18px;
-            font-weight: bold;
-            text-decoration: none;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
-        .icon {
-            font-size: 50px;
-            margin-bottom: 10px;
-        }
-        .image-pdf { background-color: #ff6b6b; }
-        .pdf-word { background-color: #4ecdc4; }
-        .word-pdf { background-color: #1a73e8; }
-        .text-pdf { background-color: #f7b731; }
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        .tool { display: block; margin: 10px auto; padding: 15px; font-size: 18px; width: 200px; cursor: pointer; }
+        .text-pdf { background-color: #3498db; color: white; }
+        .image-pdf { background-color: #2ecc71; color: white; }
+        .pdf-word { background-color: #e74c3c; color: white; }
+        .word-pdf { background-color: #f39c12; color: white; }
     </style>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="script.js" defer></script>
-    
 </head>
 <body>
-    <h1>SwiftFormatic - File Converter</h1>
-    <div class="container">
-        <a href="image-to-pdf.html" class="tool image-pdf">
-            <div class="icon">🖼️</div>
-            Image to PDF
 
-        </a>
-        <a href="pdf-to-word.html" class="tool pdf-word">
-            <div class="icon">📄</div>
-            PDF to Word
-            
-        </a>
-        <a href="word-to-pdf.html" class="tool word-pdf">
-            <div class="icon">📝</div>
-            Word to PDF
+    <h1>SwiftFormatic</h1>
+    <button class="tool text-pdf" data-type="text-pdf">Text to PDF</button>
+    <button class="tool image-pdf" data-type="image-pdf">Image to PDF</button>
+    <button class="tool pdf-word" data-type="pdf-word">PDF to Word</button>
+    <button class="tool word-pdf" data-type="word-pdf">Word to PDF</button>
 
-            
-        </a>
-        <a href="text-to-pdf.html" class="tool text-pdf">
-            <div class="icon">🔤</div>
-            Text to PDF
-            
-        </a>
-    </div>
 </body>
 </html>
