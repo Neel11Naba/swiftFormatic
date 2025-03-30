@@ -17,11 +17,17 @@
 </head>
 <body>
 
-    <h1>SwiftFormatic</h1>
-    <button class="tool text-pdf" data-type="text-pdf">Text to PDF</button>
-    <button class="tool image-pdf" data-type="image-pdf">Image to PDF</button>
-    <button class="tool pdf-word" data-type="pdf-word">PDF to Word</button>
-    <button class="tool word-pdf" data-type="word-pdf">Word to PDF</button>
+    <div class="container">
+        <h1>SwiftFormatic - File Converters</h1>
+        <div class="app-grid">
+            <button class="app-button img-to-pdf" onclick="openConverter('imageToPDF')">Image to PDF</button>
+            <button class="app-button text-to-pdf" onclick="openConverter('textToPDF')">Text to PDF</button>
+            <button class="app-button pdf-to-word" onclick="openConverter('pdfToWord')">PDF to Word</button>
+            <button class="app-button word-to-pdf" onclick="openConverter('wordToPDF')">Word to PDF</button>
+            <button class="app-button img-to-word" onclick="openConverter('imageToWord')">Image to Word</button>
+            <button class="app-button img-to-excel" onclick="openConverter('imageToExcel')">Image to Excel</button>
+        </div>
+    </div>
 <input type="file" id="imageInput" accept="image/*">
 <button onclick="convertImageToWord(document.getElementById('imageInput').files[0])">Image to Word</button>
 <button onclick="convertImageToExcel(document.getElementById('imageInput').files[0])">Image to Excel</button>
@@ -33,6 +39,31 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/4.0.2/tesseract.min.js"></script>
    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SwiftFormatic - File Converters</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>SwiftFormatic - File Converters</h1>
+        <div class="app-grid">
+            <button class="app-button img-to-pdf" onclick="openConverter('imageToPDF')">Image to PDF</button>
+            <button class="app-button text-to-pdf" onclick="openConverter('textToPDF')">Text to PDF</button>
+            <button class="app-button pdf-to-word" onclick="openConverter('pdfToWord')">PDF to Word</button>
+            <button class="app-button word-to-pdf" onclick="openConverter('wordToPDF')">Word to PDF</button>
+            <button class="app-button img-to-word" onclick="openConverter('imageToWord')">Image to Word</button>
+            <button class="app-button img-to-excel" onclick="openConverter('imageToExcel')">Image to Excel</button>
+        </div>
+    </div>
     <script src="script.js"></script>
 </body>
 </html>
