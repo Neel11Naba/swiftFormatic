@@ -1,3 +1,30 @@
+function preprocessImage(file, callback) {
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    const img = new Image();
+
+    img.onload = function () {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0, img.width, img.height);
+
+        // Convert to grayscale
+        let imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        let pixels = imgData.data;
+        for (let i = 0; i < pixels.length; i += 4) {
+            let avg = (pixels[i] + pixels[i + 1] + pixels[i + 2]) / 3;
+            pixels[i] = avg;     // Red
+            pixels[i + 1] = avg; // Green
+            pixels[i + 2] = avg; // Blue
+        }
+        ctx.putImageData(imgData, 0, 0);
+
+        callback(canvas.toDataURL("image/png"));
+    };
+
+    img.src = URL.createObjectURL(file);
+}
+
 document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll(".tool").forEach(button => {
         button.addEventListener("click", function (event) {
@@ -174,19 +201,11 @@ function convertWordToPDF(file) {
 
 //Create Image to Word file
 function convertImageToWord(file) {
-    console.log("Image selected:", file.name);
-
-    const reader = new FileReader();
-    reader.onload = function (event) {
-        const imgData = event.target.result;
-
+    preprocessImage(file, function (processedImage) {
         Tesseract.recognize(
-            imgData,
-            'eng', // Language: English (can add others)
-            {
-                logger: m => console.log(m)
-            }
+            processedImage, 'eng', { logger: m => console.log(m) }
         ).then(({ data: { text } }) => {
+            text = text.replace(/[^\x00-\x7F]/g, ""); // Remove unwanted characters
             console.log("Extracted Text:", text);
 
             if (!text.trim()) {
@@ -194,7 +213,6 @@ function convertImageToWord(file) {
                 return;
             }
 
-            // Create Word file
             const blob = new Blob([text], { type: "application/msword" });
             const link = document.createElement("a");
             link.href = URL.createObjectURL(blob);
@@ -204,24 +222,16 @@ function convertImageToWord(file) {
             console.error("OCR Error:", error);
             alert("Failed to extract text from image.");
         });
-    };
-
-    reader.readAsDataURL(file);
+    });
 }
 
 //convert Image to Excel File
 function convertImageToExcel(file) {
-    console.log("Image selected:", file.name);
-
-    const reader = new FileReader();
-    reader.onload = function (event) {
-        const imgData = event.target.result;
-
+    preprocessImage(file, function (processedImage) {
         Tesseract.recognize(
-            imgData,
-            'eng',
-            { logger: m => console.log(m) }
+            processedImage, 'eng', { logger: m => console.log(m) }
         ).then(({ data: { text } }) => {
+            text = text.replace(/[^\x00-\x7F]/g, ""); // Remove unwanted characters
             console.log("Extracted Text:", text);
 
             if (!text.trim()) {
@@ -229,22 +239,18 @@ function convertImageToExcel(file) {
                 return;
             }
 
-            // Convert extracted text into an array format
-            let textLines = text.split("\n").map(line => [line]); // Each line in a separate row
-            console.log("Formatted Text for Excel:", textLines);
+            // Convert text into structured table format
+            let rows = text.split("\n").map(row => row.trim().split(/\s+/)); // Split words into columns
+            console.log("Formatted Table Data:", rows);
 
-            // Convert extracted text into Excel sheet
-            let ws = XLSX.utils.aoa_to_sheet(textLines);
+            let ws = XLSX.utils.aoa_to_sheet(rows);
             let wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, "Extracted Data");
 
-            console.log("Saving Excel file...");
             XLSX.writeFile(wb, "extracted.xlsx");
         }).catch(error => {
             console.error("OCR Error:", error);
             alert("Failed to extract text from image.");
         });
-    };
-
-    reader.readAsDataURL(file);
+    });
 }
