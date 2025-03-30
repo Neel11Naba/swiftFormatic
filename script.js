@@ -171,3 +171,39 @@ function convertWordToPDF(file) {
 
     reader.readAsArrayBuffer(file);
 }
+
+function convertImageToWord(file) {
+    console.log("Image selected:", file.name);
+
+    const reader = new FileReader();
+    reader.onload = function (event) {
+        const imgData = event.target.result;
+
+        Tesseract.recognize(
+            imgData,
+            'eng', // Language: English (can add others)
+            {
+                logger: m => console.log(m)
+            }
+        ).then(({ data: { text } }) => {
+            console.log("Extracted Text:", text);
+
+            if (!text.trim()) {
+                alert("No text detected. Try another image.");
+                return;
+            }
+
+            // Create Word file
+            const blob = new Blob([text], { type: "application/msword" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "extracted.doc";
+            link.click();
+        }).catch(error => {
+            console.error("OCR Error:", error);
+            alert("Failed to extract text from image.");
+        });
+    };
+
+    reader.readAsDataURL(file);
+}
