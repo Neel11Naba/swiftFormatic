@@ -87,14 +87,42 @@ function convertImageToPDF(file) {
 }
 
 function convertPDFToWord(file) {
-    alert("PDF to Word conversion requires an online API. Try using an internet-based service.");
+    const reader = new FileReader();
+    reader.onload = function () {
+        const typedArray = new Uint8Array(reader.result);
+        pdfjsLib.getDocument(typedArray).promise.then(pdf => {
+            let textPromises = [];
+            for (let i = 1; i <= pdf.numPages; i++) {
+                textPromises.push(pdf.getPage(i).then(page => page.getTextContent().then(textContent => {
+                    return textContent.items.map(item => item.str).join(" ");
+                })));
+            }
+            Promise.all(textPromises).then(texts => {
+                const extractedText = texts.join("\n");
+                saveAsWordFile(extractedText);
+            });
+        }).catch(error => {
+            console.error("Error reading PDF:", error);
+            alert("Failed to extract text from PDF.");
+        });
+    };
+    reader.readAsArrayBuffer(file);
+}
+
+function saveAsWordFile(text) {
+    const blob = new Blob([text], { type: "application/msword" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "converted.doc";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 }
 
 function convertWordToPDF(file) {
     const reader = new FileReader();
     reader.onload = function (event) {
         const docxContent = event.target.result;
-
         Mammoth.convertToHtml({ arrayBuffer: docxContent })
             .then(function (result) {
                 const { jsPDF } = window.jspdf;
@@ -109,4 +137,4 @@ function convertWordToPDF(file) {
     };
 
     reader.readAsArrayBuffer(file);
-}
+                                  }
