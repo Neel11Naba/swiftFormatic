@@ -1,114 +1,39 @@
-// ✅ Image to PDF (Fixed Image Cut Issue)
-function convertImageToPDF() {
-    let fileInput = document.getElementById('imageInput').files[0];
-    if (!fileInput) {
-        alert("Please select an image first.");
-        return;
-    }
+document.addEventListener("DOMContentLoaded", function () { document.querySelectorAll(".tool").forEach(button => { button.addEventListener("click", function (event) { event.preventDefault(); const type = this.getAttribute("data-type"); handleConversion(type); }); }); });
 
-    let reader = new FileReader();
-    reader.onload = function (event) {
-        let img = new Image();
-        img.src = event.target.result;
-        img.onload = function () {
-            let pdf = new jspdf.jsPDF();
-            let pageWidth = pdf.internal.pageSize.getWidth();
-            let pageHeight = pdf.internal.pageSize.getHeight();
+function handleConversion(type) { let input = document.createElement("input"); input.type = "file";
 
-            // Auto scale image to fit in PDF
-            let imgWidth = pageWidth - 20;
-            let imgHeight = (img.height / img.width) * imgWidth;
-
-            if (imgHeight > pageHeight - 20) {
-                imgHeight = pageHeight - 20;
-                imgWidth = (img.width / img.height) * imgHeight;
-            }
-
-            pdf.addImage(img.src, "JPEG", 10, 10, imgWidth, imgHeight);
-            pdf.save("converted.pdf");
-        };
-    };
-    reader.readAsDataURL(fileInput);
+if (type === "text-pdf") {
+    input.accept = ".txt";
+} else if (type === "word-pdf") {
+    input.accept = ".docx";
+} else if (type === "pdf-word") {
+    input.accept = ".pdf";
+} else if (type === "image-pdf") {
+    input.accept = "image/*";
 }
 
-// ✅ PDF to Word (Fixed Error - Now Uses PDF.js)
-function convertPDFToWord() {
-    let fileInput = document.getElementById('pdfToWordInput').files[0];
-    if (!fileInput) {
-        alert("Please select a PDF file first.");
-        return;
-    }
+input.addEventListener("change", function () {
+    const file = input.files[0];
+    if (!file) return;
 
-    let reader = new FileReader();
-    reader.onload = function (event) {
-        pdfjsLib.getDocument({ data: event.target.result }).promise.then(pdf => {
-            let fullText = "";
-            let promises = [];
-            for (let i = 1; i <= pdf.numPages; i++) {
-                promises.push(pdf.getPage(i).then(page => {
-                    return page.getTextContent().then(textContent => {
-                        let pageText = textContent.items.map(item => item.str).join(" ");
-                        fullText += `\n--- Page ${i} ---\n` + pageText;
-                    });
-                }));
-            }
-            Promise.all(promises).then(() => {
-                let blob = new Blob([fullText], { type: "application/msword" });
-                let link = document.createElement("a");
-                link.href = URL.createObjectURL(blob);
-                link.download = "converted.docx";
-                link.click();
-            });
-        }).catch(err => {
-            console.error("Error:", err);
-            alert("Failed to convert PDF to Word.");
-        });
-    };
-    reader.readAsArrayBuffer(fileInput);
-}
-
-// ✅ Word to PDF (Fixed Text Cutting)
-function convertWordToPDF() {
-    let fileInput = document.getElementById('wordToPDFInput').files[0];
-    if (!fileInput) {
-        alert("Please select a Word file first.");
-        return;
-    }
-
-    let reader = new FileReader();
-    reader.onload = function (event) {
-        let text = event.target.result;
-        let pdf = new jspdf.jsPDF();
-        let margin = 10;
-        let pageWidth = pdf.internal.pageSize.getWidth() - 2 * margin;
-        let pageHeight = pdf.internal.pageSize.getHeight() - 2 * margin;
-        let lineHeight = 10;
-
-        let lines = pdf.splitTextToSize(text, pageWidth);
-        let cursorY = margin;
-        for (let i = 0; i < lines.length; i++) {
-            if (cursorY + lineHeight > pageHeight) {
-                pdf.addPage();
-                cursorY = margin;
-            }
-            pdf.text(lines[i], margin, cursorY);
-            cursorY += lineHeight;
+    const reader = new FileReader();
+    reader.onload = function () {
+        if (type === "text-pdf") {
+            convertTextToPDF(reader.result);
+        } else if (type === "word-pdf") {
+            alert("Word to PDF conversion feature coming soon!");
+        } else if (type === "pdf-word") {
+            alert("PDF to Word conversion feature coming soon!");
+        } else if (type === "image-pdf") {
+            alert("Image to PDF conversion feature coming soon!");
         }
-
-        pdf.save("converted.pdf");
     };
-    reader.readAsText(fileInput);
-                  }
+    reader.readAsText(file);
+});
 
-// JavaScript for Text to PDF Functionality
-function convertTextToPDF() {
-    const { jsPDF } = window.jspdf;
-    let doc = new jsPDF();
-    
-    let text = document.getElementById("textInput").value;
-    let margins = { top: 20, left: 10, bottom: 20 };
-    
-    doc.text(text, margins.left, margins.top);
-    
-    doc.save("text.pdf");
+input.click();
+
 }
+
+function convertTextToPDF(text) { const { jsPDF } = window.jspdf; let pdf = new jsPDF(); pdf.text(text, 10, 10); pdf.save("converted.pdf"); }
+
