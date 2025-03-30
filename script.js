@@ -172,6 +172,7 @@ function convertWordToPDF(file) {
     reader.readAsArrayBuffer(file);
 }
 
+//Create Image to Word file
 function convertImageToWord(file) {
     console.log("Image selected:", file.name);
 
@@ -199,6 +200,46 @@ function convertImageToWord(file) {
             link.href = URL.createObjectURL(blob);
             link.download = "extracted.doc";
             link.click();
+        }).catch(error => {
+            console.error("OCR Error:", error);
+            alert("Failed to extract text from image.");
+        });
+    };
+
+    reader.readAsDataURL(file);
+}
+
+//convert Image to Excel File
+function convertImageToExcel(file) {
+    console.log("Image selected:", file.name);
+
+    const reader = new FileReader();
+    reader.onload = function (event) {
+        const imgData = event.target.result;
+
+        Tesseract.recognize(
+            imgData,
+            'eng',
+            { logger: m => console.log(m) }
+        ).then(({ data: { text } }) => {
+            console.log("Extracted Text:", text);
+
+            if (!text.trim()) {
+                alert("No text detected. Try another image.");
+                return;
+            }
+
+            // Convert extracted text into an array format
+            let textLines = text.split("\n").map(line => [line]); // Each line in a separate row
+            console.log("Formatted Text for Excel:", textLines);
+
+            // Convert extracted text into Excel sheet
+            let ws = XLSX.utils.aoa_to_sheet(textLines);
+            let wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Extracted Data");
+
+            console.log("Saving Excel file...");
+            XLSX.writeFile(wb, "extracted.xlsx");
         }).catch(error => {
             console.error("OCR Error:", error);
             alert("Failed to extract text from image.");
