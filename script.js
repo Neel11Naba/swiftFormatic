@@ -132,19 +132,27 @@ function saveAsWordFile(text) {
 function convertWordToPDF(file) {
     const reader = new FileReader();
     reader.onload = function (event) {
-        const docxContent = event.target.result;
-        Mammoth.convertToHtml({ arrayBuffer: docxContent })
-            .then(function (result) {
-                const { jsPDF } = window.jspdf;
-                const doc = new jsPDF();
-                doc.text(result.value, 10, 10);
-                doc.save("word-to-pdf.pdf");
-            })
-            .catch(function (error) {
-                console.error("Error converting Word to PDF:", error);
-                alert("Failed to convert Word to PDF.");
-            });
-    };
+        const arrayBuffer = event.target.result;
 
+        // Use Mammoth.js to extract text (preserves bold, italics, headings)
+        mammoth.convertToHtml({ arrayBuffer: arrayBuffer }).then(result => {
+            const extractedText = result.value;
+            
+            // Initialize jsPDF
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF();
+            pdf.setFont("times");
+            
+            // Split text into lines for proper formatting
+            let lines = pdf.splitTextToSize(extractedText, 180);
+            pdf.text(10, 10, lines);
+            
+            // Save as PDF
+            pdf.save("converted.pdf");
+        }).catch(error => {
+            console.error("Error converting DOCX to PDF:", error);
+            alert("Failed to convert Word to PDF.");
+        });
+    };
     reader.readAsArrayBuffer(file);
-                                  }
+}
