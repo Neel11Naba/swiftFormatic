@@ -99,3 +99,16 @@ function convertWordToPDF() {
     };
     reader.readAsText(fileInput);
                   }
+
+// JavaScript for Text to PDF Functionality
+function convertTextToPDF() {
+    const { jsPDF } = window.jspdf;
+    let doc = new jsPDF();
+    
+    let text = document.getElementById("textInput").value;
+    let margins = { top: 20, left: 10, bottom: 20 };
+    
+    doc.text(text, margins.left, margins.top);
+    
+    doc.save("text.pdf");
+}
