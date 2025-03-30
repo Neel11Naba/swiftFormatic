@@ -1,45 +1,64 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formatic - File Converter</title>
-
-    <!-- ✅ Link CSS -->
-    <link rel="stylesheet" href="styles.css">
-
-    <!-- ✅ jsPDF for PDF Generation -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-    <!-- ✅ PDF.js for PDF Handling -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.min.js"></script>
+    <title>SwiftFormatic - File Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 50px;
+        }
+        .tool {
+            width: 200px;
+            padding: 20px;
+            margin: 15px;
+            border-radius: 10px;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .icon {
+            font-size: 50px;
+            margin-bottom: 10px;
+        }
+        .image-pdf { background-color: #ff6b6b; }
+        .pdf-word { background-color: #4ecdc4; }
+        .word-pdf { background-color: #1a73e8; }
+        .text-pdf { background-color: #f7b731; }
+    </style>
 </head>
 <body>
-
+    <h1>SwiftFormatic - File Converter</h1>
     <div class="container">
-        <h1>Formatic - Free File Converter</h1>
-
-        <div class="converter-box">
-            <h2>Image to PDF</h2>
-            <input type="file" id="imageInput" accept="image/*">
-            <button onclick="convertImageToPDF()">Convert</button>
-        </div>
-
-        <div class="converter-box">
-            <h2>PDF to Word</h2>
-            <input type="file" id="pdfToWordInput" accept=".pdf">
-            <button onclick="convertPDFToWord()">Convert</button>
-        </div>
-
-        <div class="converter-box">
-            <h2>Word to PDF</h2>
-            <input type="file" id="wordToPDFInput" accept=".doc,.docx">
-            <button onclick="convertWordToPDF()">Convert</button>
-        </div>
+        <a href="image-to-pdf.html" class="tool image-pdf">
+            <div class="icon">🖼️</div>
+            Image to PDF
+        </a>
+        <a href="pdf-to-word.html" class="tool pdf-word">
+            <div class="icon">📄</div>
+            PDF to Word
+        </a>
+        <a href="word-to-pdf.html" class="tool word-pdf">
+            <div class="icon">📝</div>
+            Word to PDF
+        </a>
+        <a href="text-to-pdf.html" class="tool text-pdf">
+            <div class="icon">🔤</div>
+            Text to PDF
+        </a>
     </div>
-
-});
-
-    <script src="script.js"></script>
 </body>
 </html>
