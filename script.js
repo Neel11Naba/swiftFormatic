@@ -119,6 +119,16 @@ function saveAsWordFile(text) {
     document.body.removeChild(link);
 }
 
+function saveAsWordFile(text) {
+    const blob = new Blob([text], { type: "application/msword" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "converted.doc";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
 function convertWordToPDF(file) {
     const reader = new FileReader();
     reader.onload = function (event) {
