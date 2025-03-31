@@ -8,14 +8,13 @@ function preprocessImage(file, callback) {
         canvas.height = img.height;
         ctx.drawImage(img, 0, 0, img.width, img.height);
 
-        // Convert to grayscale
         let imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
         let pixels = imgData.data;
         for (let i = 0; i < pixels.length; i += 4) {
             let avg = (pixels[i] + pixels[i + 1] + pixels[i + 2]) / 3;
-            pixels[i] = avg;     // Red
-            pixels[i + 1] = avg; // Green
-            pixels[i + 2] = avg; // Blue
+            pixels[i] = avg;
+            pixels[i + 1] = avg;
+            pixels[i + 2] = avg;
         }
         ctx.putImageData(imgData, 0, 0);
 
@@ -25,22 +24,16 @@ function preprocessImage(file, callback) {
     img.src = URL.createObjectURL(file);
 }
 
-
-
 document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll(".tool").forEach(button => {
-        button.addEventListener("click", function (event) {
-            event.preventDefault();
+        button.addEventListener("click", function () {
             const type = this.getAttribute("data-type");
-
             if (!type) {
-                console.error("Error: data-type is missing for this button!");
+                console.error("Error: data-type is missing!");
                 alert("Error: data-type is missing!");
                 return;
             }
 
-            console.log("Button Clicked:", type);
-            alert("Button Clicked: " + type);
             handleConversion(type);
         });
     });
@@ -60,34 +53,51 @@ function handleConversion(type) {
     } else if (type === "pdf-word") {
         input.accept = ".pdf";
         input.addEventListener("change", function () {
-            const file = input.files[0];
-            if (!file) {
+            if (!this.files[0]) {
                 alert("No file selected!");
                 return;
             }
-            convertPDFToWord(file);
+            convertPDFToWord(this.files[0]);
         });
         input.click();
     } else if (type === "word-pdf") {
         input.accept = ".doc,.docx";
         input.addEventListener("change", function () {
-            const file = input.files[0];
-            if (!file) {
+            if (!this.files[0]) {
                 alert("No file selected!");
                 return;
             }
-            convertWordToPDF(file);
+            convertWordToPDF(this.files[0]);
         });
         input.click();
     } else if (type === "image-pdf") {
         input.accept = "image/*";
         input.addEventListener("change", function () {
-            const file = input.files[0];
-            if (!file) {
+            if (!this.files[0]) {
                 alert("No file selected!");
                 return;
             }
-            convertImageToPDF(file);
+            convertImageToPDF(this.files[0]);
+        });
+        input.click();
+    } else if (type === "image-word") {
+        input.accept = "image/*";
+        input.addEventListener("change", function () {
+            if (!this.files[0]) {
+                alert("No file selected!");
+                return;
+            }
+            convertImageToWord(this.files[0]);
+        });
+        input.click();
+    } else if (type === "image-excel") {
+        input.accept = "image/*";
+        input.addEventListener("change", function () {
+            if (!this.files[0]) {
+                alert("No file selected!");
+                return;
+            }
+            convertImageToExcel(this.files[0]);
         });
         input.click();
     }
@@ -127,25 +137,11 @@ function convertPDFToWord(file) {
                 })));
             }
             Promise.all(textPromises).then(texts => {
-                const extractedText = texts.join("\n");
-                saveAsWordFile(extractedText);
+                saveAsWordFile(texts.join("\n"));
             });
-        }).catch(error => {
-            console.error("Error reading PDF:", error);
-            alert("Failed to extract text from PDF.");
         });
     };
     reader.readAsArrayBuffer(file);
-}
-
-function saveAsWordFile(text) {
-    const blob = new Blob([text], { type: "application/msword" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = "converted.doc";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
 }
 
 function saveAsWordFile(text) {
@@ -159,100 +155,35 @@ function saveAsWordFile(text) {
 }
 
 function convertWordToPDF(file) {
-    console.log("File selected for conversion:", file.name);
-
     const reader = new FileReader();
     reader.onload = function (event) {
-        console.log("File read successfully.");
-        const arrayBuffer = event.target.result;
-
-        // Use Mammoth.js to extract text (preserves bold, italics, headings)
-        mammoth.convertToHtml({ arrayBuffer: arrayBuffer }).then(result => {
-            console.log("Mammoth.js conversion successful.");
-            const extractedText = result.value;
-            
-            // Initialize jsPDF
+        mammoth.convertToHtml({ arrayBuffer: event.target.result }).then(result => {
             const { jsPDF } = window.jspdf;
             const pdf = new jsPDF();
-            pdf.setFont("times");
-
-            if (!extractedText.trim()) {
-                alert("No text extracted. Try a different Word file.");
-                return;
-            }
-
-            // Split text into lines for proper formatting
-            let lines = pdf.splitTextToSize(extractedText, 180);
+            let lines = pdf.splitTextToSize(result.value, 180);
             pdf.text(10, 10, lines);
-            
-            console.log("Saving PDF...");
             pdf.save("converted.pdf");
-        }).catch(error => {
-            console.error("Error converting DOCX to PDF:", error);
-            alert("Failed to convert Word to PDF.");
         });
     };
-    
-    reader.onerror = function () {
-        console.error("Error reading the file.");
-        alert("Failed to read the Word file.");
-    };
-
     reader.readAsArrayBuffer(file);
 }
 
-//Create Image to Word file
 function convertImageToWord(file) {
     preprocessImage(file, function (processedImage) {
-        Tesseract.recognize(
-            processedImage, 'eng', { logger: m => console.log(m) }
-        ).then(({ data: { text } }) => {
-            text = text.replace(/[^\x00-\x7F]/g, ""); // Remove unwanted characters
-            console.log("Extracted Text:", text);
-
-            if (!text.trim()) {
-                alert("No text detected. Try another image.");
-                return;
-            }
-
-            const blob = new Blob([text], { type: "application/msword" });
-            const link = document.createElement("a");
-            link.href = URL.createObjectURL(blob);
-            link.download = "extracted.doc";
-            link.click();
-        }).catch(error => {
-            console.error("OCR Error:", error);
-            alert("Failed to extract text from image.");
+        Tesseract.recognize(processedImage, 'eng').then(({ data: { text } }) => {
+            saveAsWordFile(text);
         });
     });
 }
 
-//convert Image to Excel File
 function convertImageToExcel(file) {
     preprocessImage(file, function (processedImage) {
-        Tesseract.recognize(
-            processedImage, 'eng', { logger: m => console.log(m) }
-        ).then(({ data: { text } }) => {
-            text = text.replace(/[^\x00-\x7F]/g, ""); // Remove unwanted characters
-            console.log("Extracted Text:", text);
-
-            if (!text.trim()) {
-                alert("No text detected. Try another image.");
-                return;
-            }
-
-            // Convert text into structured table format
-            let rows = text.split("\n").map(row => row.trim().split(/\s+/)); // Split words into columns
-            console.log("Formatted Table Data:", rows);
-
+        Tesseract.recognize(processedImage, 'eng').then(({ data: { text } }) => {
+            let rows = text.split("\n").map(row => row.trim().split(/\s+/));
             let ws = XLSX.utils.aoa_to_sheet(rows);
             let wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, "Extracted Data");
-
             XLSX.writeFile(wb, "extracted.xlsx");
-        }).catch(error => {
-            console.error("OCR Error:", error);
-            alert("Failed to extract text from image.");
         });
     });
-}
+            }
