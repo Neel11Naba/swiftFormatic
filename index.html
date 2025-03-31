@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SwiftFormatic - File Converters</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="script.js" defer></script>
-    
 </head>
 <body>
 
@@ -18,23 +15,21 @@
             <button class="app-button text-to-pdf" onclick="openConverter('textToPDF')">Text to PDF</button>
             <button class="app-button pdf-to-word" onclick="openConverter('pdfToWord')">PDF to Word</button>
             <button class="app-button word-to-pdf" onclick="openConverter('wordToPDF')">Word to PDF</button>
-            <button class="app-button img-to-word" onclick="openConverter('imageToWord')">Image to Word</button>
-            <button class="app-button img-to-excel" onclick="openConverter('imageToExcel')">Image to Excel</button>
+            <button class="app-button img-to-word" onclick="handleImageToWord()">Image to Word</button>
+            <button class="app-button img-to-excel" onclick="handleImageToExcel()">Image to Excel</button>
         </div>
     </div>
-<input type="file" id="imageInput" accept="image/*">
-<button onclick="convertImageToWord(document.getElementById('imageInput').files[0])">Image to Word</button>
-<button onclick="convertImageToExcel(document.getElementById('imageInput').files[0])">Image to Excel</button>
-    
+
+    <input type="file" id="imageInput" accept="image/*">
+
+    <!-- External Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/4.0.2/tesseract.min.js"></script>
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/4.0.2/tesseract.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <!-- Custom JavaScript -->
     <script src="script.js"></script>
+
 </body>
 </html>
-
-
