@@ -26,6 +26,15 @@ function preprocessImage(file, callback) {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".app-button").forEach(button => {
+        button.addEventListener("click", function () {
+            const converterType = this.getAttribute("onclick").replace("openConverter('", "").replace("')", "");
+            openConverter(converterType);
+        });
+    });
+});
+
+document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll(".tool").forEach(button => {
         button.addEventListener("click", function (event) {
             event.preventDefault();
