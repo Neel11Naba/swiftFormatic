@@ -25,14 +25,7 @@ function preprocessImage(file, callback) {
     img.src = URL.createObjectURL(file);
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll(".app-button").forEach(button => {
-        button.addEventListener("click", function () {
-            const converterType = this.getAttribute("onclick").replace("openConverter('", "").replace("')", "");
-            openConverter(converterType);
-        });
-    });
-});
+
 
 document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll(".tool").forEach(button => {
